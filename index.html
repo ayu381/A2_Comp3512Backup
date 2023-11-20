@@ -18,8 +18,41 @@
         <h2>Search/Browse Songs</h2>
 
         <section id="song-search-section">
-            <label for="song-search">Search Songs:</label>
-            <input type="text" id="song-search" placeholder="Enter song title, artist, or genre">
+
+            <!-- Select search options -->
+            <div id="radioButtons">
+                <input type="radio" id="title-option" name="search-options" value="title" checked>
+                <label for="title-option">Title</label>
+                
+                <input type="radio" id="artist-option" name="search-options" value="artist">
+                <label for="artist-option">Artist</label>
+                
+                <input type="radio" id="genre-option" name="search-options" value="genre">
+                <label for="genre-option">Genre</label>
+            </div>
+            
+            <!-- Search -->
+            <label for="song-search" >Search Songs:</label>
+            <input type="text" id="song-search" placeholder="Enter song title">
+            
+            <!-- Artist -->
+            <label for="artist-select">Artist:</label>
+            <select id="artist-select">
+                <option value="">Select Artist</option>
+                <option value="Sample Artist 1">Sample Artist 1</option>
+                <option value="Sample Artist 2">Sample Artist 2</option>
+                <!-- Fill in artist options -->
+            </select>
+            
+            <!-- Genre -->
+            <label for="genre-select">Genre:</label>
+            <select id="genre-select">
+                <option value="">Select Genre</option>
+                <option value="Pop">Pop</option>
+                <option value="Rock">Rock</option>
+                <!-- Fill in genre options -->
+            </select>
+            
             <button id="search-button">Search</button>
         </section>
 
@@ -38,13 +71,6 @@
                 </thead>
             <tbody>
 
-                <tr>
-                    <td>Sample Title</td>
-                    <td>Sample Artist</td>
-                    <td>2022</td>
-                    <td>Pop</td>
-                    <td>High</td>
-                </tr>
             </tbody>
         </table>
     </div>
@@ -53,5 +79,10 @@
         <!-- Footer content here -->
     </footer>
 
+    <!-- script sources-->
+    <script src="starting-files/artists.json"></script>
+    <script src="starting-files/genres.json"></script>
+    <script src="starting-files/sample-songs.json"></script>
+    <script src="js-files/SearchBrowse.js"></script>
 </body>
 </html>
