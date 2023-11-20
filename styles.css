@@ -38,8 +38,30 @@ th {
 
 #song-search-section {
     margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
 }
 
 input[type="text"] {
-    width: 60%;
+    width: 40%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+select {
+    width: 30%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+#search-button {
+    width: 10%;
+}
+
+#radioButtons {
+    margin-left: 5px;
+    margin-bottom: 15px;
+    display: inline-block;
+    align-items: flex-start;
 }
