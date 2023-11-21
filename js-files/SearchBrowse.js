@@ -1,11 +1,42 @@
+// JSON parsing for each file given
 const songs = JSON.parse(songContent);
+const artists = JSON.parse(artistContent);
+const genres = JSON.parse(genreContent);
 
 // Function to populate rows with song data
 function songDisplay() {
+    // Sorting logic 
+    songs.sort((a, b) => {
+        const artistA = a.artist.name.toUpperCase();
+        const artistB = b.artist.name.toUpperCase();
+        if (artistA < artistB) {
+            return -1;
+        }
+        if (artistA > artistB) {
+            return 1;
+        }
+        const titleA = a.title.toUpperCase();
+        const titleB = b.title.toUpperCase();
+        return titleA.localeCompare(titleB);
+    });
+
+    displaySongs(songs);
+}
+
+// Function to display filtered songs
+function displayFilteredSongs(filteredSongs) {
+    displaySongs(filteredSongs);
+}
+
+// Common function to create rows and append cells
+function displaySongs(songsToDisplay) {
     const tableBody = document.querySelector("#search-results tbody");
 
+    // Clear existing rows
+    tableBody.innerHTML = '';
+
     // Iterate through each song and create a new row in the table
-    songs.forEach((song) => {
+    songsToDisplay.forEach((song) => {
         const row = document.createElement("tr");
 
         // Cell generator for each property
@@ -26,14 +57,12 @@ function songDisplay() {
         row.appendChild(genreCell);
 
         const popularityCell = document.createElement("td");
-        popularityCell.textContent = song.details.popularity; 
+        popularityCell.textContent = song.details.popularity;
         row.appendChild(popularityCell);
 
         tableBody.appendChild(row);
     });
 }
-
-const artists = JSON.parse(artistContent);
 
 // Artist select options function
 function artistOptions() {
@@ -46,9 +75,21 @@ function artistOptions() {
         option.textContent = artist.name;
         artistSelect.appendChild(option);
     });
-}
 
-const genres = JSON.parse(genreContent);
+    // Event listener for changes in the artist dropdown
+    artistSelect.addEventListener('change', function () {
+        const selectedArtist = this.value;
+        if (selectedArtist) {
+            // Filter songs based on selected artist
+            const filteredSongs = songs.filter(song => song.artist.name === selectedArtist);
+            // Display filtered songs
+            displayFilteredSongs(filteredSongs);
+        } else {
+            // If no artist selected, display all songs
+            songDisplay();
+        }
+    });
+}
 
 // Genre select options function
 function genreOptions() {
@@ -61,9 +102,42 @@ function genreOptions() {
         option.textContent = genre.name;
         genreSelect.appendChild(option);
     });
+
+    // Event listener for changes in the genre dropdown
+    genreSelect.addEventListener('change', filterSongs);
 }
 
-// Call all functions the window is loaded
+// Artist option event listener
+document.getElementById("artist-select").addEventListener('change', function () {
+    filterSongs();
+});
+
+// Genre option event listener
+document.getElementById("genre-select").addEventListener('change', function () {
+    filterSongs();
+});
+
+// Search button event listener
+document.getElementById("search-button").addEventListener("click", function () {
+    filterSongs();
+});
+
+// Function to filter songs based on selected artist, genre, and title
+function filterSongs() {
+    const selectedArtist = document.getElementById("artist-select").value;
+    const selectedGenre = document.getElementById("genre-select").value;
+    const typedTitle = document.getElementById("song-search").value.toLowerCase();
+
+    const filteredSongs = songs.filter(song =>
+        (!selectedArtist || song.artist.name === selectedArtist) &&
+        (!selectedGenre || song.genre.name === selectedGenre) &&
+        (!typedTitle || song.title.toLowerCase().startsWith(typedTitle))
+    );
+
+    displayFilteredSongs(filteredSongs);
+}
+
+// Call all functions when window is loaded
 window.onload = function () {
     songDisplay();
     artistOptions();
