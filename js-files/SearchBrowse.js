@@ -1,5 +1,4 @@
 // JSON parsing for each file given
-const songs = JSON.parse(songContent);
 const artists = JSON.parse(artistContent);
 const genres = JSON.parse(genreContent);
 const api = 'http://www.randyconnolly.com/funwebdev/3rd/api/music/songs-nested.php';
@@ -17,9 +16,6 @@ function songDisplay() {
         // Sort
         const sortedLocalData = sortSongs(localData);
         displaySongs(sortedLocalData);
-       
-        // Display songs from local storage
-        displaySongs(localData);
 
     // Fetch data from API
     } else {
@@ -31,11 +27,8 @@ function songDisplay() {
                 const sortedApiData = sortSongs(data);
                 displaySongs(sortedApiData);
                 
-                // Display songs from the original data
-                displaySongs(songs);
-                
                 // Save data to local storage
-                localStorage.setItem('songData', JSON.stringify(songs));
+                localStorage.setItem('songData', JSON.stringify(data));
             })
             .catch(error => console.error('Error fetching data:', error));
     }
@@ -106,16 +99,7 @@ function artistOptions() {
 
     // Event listener for changes in the artist dropdown
     artistSelect.addEventListener('change', function () {
-        const selectedArtist = this.value;
-        if (selectedArtist) {
-            // Filter songs based on selected artist
-            const filteredSongs = songs.filter(song => song.artist.name === selectedArtist);
-            // Display filtered songs
-            displayFilteredSongs(filteredSongs);
-        } else {
-            // If no artist selected, display all songs
-            songDisplay();
-        }
+        filterSongs();
     });
 }
 
@@ -145,6 +129,10 @@ function filterSongs() {
     const selectedArtist = document.getElementById("artist-select").value;
     const selectedGenre = document.getElementById("genre-select").value;
     const typedTitle = document.getElementById("song-search").value.toLowerCase();
+
+    // Retrieve the data from local storage or API
+    const storedData = localStorage.getItem('songData');
+    const songs = storedData ? JSON.parse(storedData) : [];
 
     const filteredSongs = songs.filter(song =>
         (!selectedArtist || song.artist.name === selectedArtist) &&
