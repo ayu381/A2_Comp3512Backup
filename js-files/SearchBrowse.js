@@ -2,35 +2,32 @@
 const songs = JSON.parse(songContent);
 const artists = JSON.parse(artistContent);
 const genres = JSON.parse(genreContent);
-
 const api = 'http://www.randyconnolly.com/funwebdev/3rd/api/music/songs-nested.php';
-
 
 // Function to populate rows with song data
 function songDisplay() {
 
     // Check if data is in local storage
     const storedData = localStorage.getItem('songData');
-
     if (storedData) {
-        // Use local data
+    
+        // Parse stored data
         const localData = JSON.parse(storedData);
         
-        // Sorting logic
+        // Sort
         const sortedLocalData = sortSongs(localData);
         displaySongs(sortedLocalData);
        
         // Display songs from local storage
         displaySongs(localData);
+
+    // Fetch data from API
     } else {
-        // Fetch data from API
         fetch (api)
             .then(response => response.json())
             .then(data => {
-                // Store data in local storage
-                localStorage.setItem('songData', JSON.stringify(data));
 
-                // Sorting logic
+                // Sort
                 const sortedApiData = sortSongs(data);
                 displaySongs(sortedApiData);
                 
@@ -61,7 +58,6 @@ function sortSongs(songsSorted) {
     });
 }
 
-
 // Function to display filtered songs
 function displayFilteredSongs(filteredSongs) {
     displaySongs(filteredSongs);
@@ -78,29 +74,22 @@ function displaySongs(songsToDisplay) {
     songsToDisplay.forEach((song) => {
         const row = document.createElement("tr");
 
-        // Cell generator for each property
-        const titleCell = document.createElement("td");
-        titleCell.textContent = song.title;
-        row.appendChild(titleCell);
-
-        const artistCell = document.createElement("td");
-        artistCell.textContent = song.artist.name;
-        row.appendChild(artistCell);
-
-        const yearCell = document.createElement("td");
-        yearCell.textContent = song.year;
-        row.appendChild(yearCell);
-
-        const genreCell = document.createElement("td");
-        genreCell.textContent = song.genre.name;
-        row.appendChild(genreCell);
-
-        const popularityCell = document.createElement("td");
-        popularityCell.textContent = song.details.popularity;
-        row.appendChild(popularityCell);
-
+        // Append cells
+        row.appendChild(createCell(song.title));
+        row.appendChild(createCell(song.artist.name));
+        row.appendChild(createCell(song.year));
+        row.appendChild(createCell(song.genre.name));
+        row.appendChild(createCell(song.details.popularity));
+    
         tableBody.appendChild(row);
     });
+}
+
+// Function to create cell for each row - then appended above
+function createCell(value) {
+    const cell = document.createElement("td");
+    cell.textContent = value;
+    return cell;
 }
 
 // Artist select options function
@@ -146,20 +135,10 @@ function genreOptions() {
     genreSelect.addEventListener('change', filterSongs);
 }
 
-// Artist option event listener
-document.getElementById("artist-select").addEventListener('change', function () {
-    filterSongs();
-});
-
-// Genre option event listener
-document.getElementById("genre-select").addEventListener('change', function () {
-    filterSongs();
-});
-
-// Search button event listener
-document.getElementById("search-button").addEventListener("click", function () {
-    filterSongs();
-});
+// Event Listeners
+document.getElementById("artist-select").addEventListener('change', filterSongs);
+document.getElementById("genre-select").addEventListener('change', filterSongs);
+document.getElementById("search-button").addEventListener("click", filterSongs);
 
 // Function to filter songs based on selected artist, genre, and title
 function filterSongs() {
