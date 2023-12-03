@@ -8,6 +8,7 @@ const api = 'http://www.randyconnolly.com/funwebdev/3rd/api/music/songs-nested.p
 
 // Function to populate rows with song data
 function songDisplay() {
+
     // Check if data is in local storage
     const storedData = localStorage.getItem('songData');
 
@@ -16,20 +17,9 @@ function songDisplay() {
         const localData = JSON.parse(storedData);
         
         // Sorting logic
-        localData.sort((a, b) => {
-            const artistA = a.artist.name.toUpperCase();
-            const artistB = b.artist.name.toUpperCase();
-            if (artistA < artistB) {
-                return -1;
-            }
-            if (artistA > artistB) {
-                return 1;
-            }
-            const titleA = a.title.toUpperCase();
-            const titleB = b.title.toUpperCase();
-            return titleA.localeCompare(titleB);
-        });
-        
+        const sortedLocalData = sortSongs(localData);
+        displaySongs(sortedLocalData);
+       
         // Display songs from local storage
         displaySongs(localData);
     } else {
@@ -41,37 +31,43 @@ function songDisplay() {
                 localStorage.setItem('songData', JSON.stringify(data));
 
                 // Sorting logic
-                songs.sort((a, b) => {
-                    const artistA = a.artist.name.toUpperCase();
-                    const artistB = b.artist.name.toUpperCase();
-                    if (artistA < artistB) {
-                        return -1;
-                    }
-                    if (artistA > artistB) {
-                        return 1;
-                    }
-                    const titleA = a.title.toUpperCase();
-                    const titleB = b.title.toUpperCase();
-                    return titleA.localeCompare(titleB);
-                });
+                const sortedApiData = sortSongs(data);
+                displaySongs(sortedApiData);
                 
                 // Display songs from the original data
                 displaySongs(songs);
                 
                 // Save data to local storage
                 localStorage.setItem('songData', JSON.stringify(songs));
-
             })
             .catch(error => console.error('Error fetching data:', error));
     }
 }
+
+// Sorting function
+function sortSongs(songsSorted) {
+    return songsSorted.sort((a, b) => {
+        const artistA = a.artist.name.toUpperCase();
+        const artistB = b.artist.name.toUpperCase();
+        if (artistA < artistB) {
+            return -1;
+        }
+        if (artistA > artistB) {
+            return 1;
+        }
+        const titleA = a.title.toUpperCase();
+        const titleB = b.title.toUpperCase();
+        return titleA.localeCompare(titleB);
+    });
+}
+
 
 // Function to display filtered songs
 function displayFilteredSongs(filteredSongs) {
     displaySongs(filteredSongs);
 }
 
-// Common function to create rows and append cells
+// create rows and append cells
 function displaySongs(songsToDisplay) {
     const tableBody = document.querySelector("#search-results tbody");
 
